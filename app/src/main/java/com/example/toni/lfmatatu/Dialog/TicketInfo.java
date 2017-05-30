@@ -74,8 +74,8 @@ public class TicketInfo extends Dialog {
             @Override
             public void onClick(View v) {
 
-                final DatabaseReference mTicks = FirebaseDatabase.getInstance().getReference().child(ticket);
-                mTicks.addListenerForSingleValueEvent(new ValueEventListener() {
+                final DatabaseReference mTicks = FirebaseDatabase.getInstance().getReference().child("Tickets");
+                mTicks.child(ticket).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -91,6 +91,7 @@ public class TicketInfo extends Dialog {
                                                     @Override
                                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                                                         dismiss();
+                                                        sweetAlertDialog.dismissWithAnimation();
                                                     }
                                                 })
                                                 .show();

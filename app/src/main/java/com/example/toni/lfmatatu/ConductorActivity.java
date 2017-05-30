@@ -175,58 +175,67 @@ public class ConductorActivity extends AppCompatActivity {
 
                         if (dataSnapshot.exists()) {
 
-
-                            DatabaseReference dc = FirebaseDatabase.getInstance().getReference().child("Matatu");
-
-                            // mMatatu.child(dataSnapshot.child("matatu").getValue().toString());
-                            // Query q = dc.orderByChild("matatu").equalTo(dataSnapshot.child("matatu").getValue().toString());
-
-                            dc.child(dataSnapshot.child("matatu").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot ds) {
-                                    pDialog.dismiss();
-
-                                    // Toast.makeText(ConductorActivity.this,ds.toString(),Toast.LENGTH_LONG).show();
-                                    // Log.d("sdfsffdsd",  image[0]);
-
-                                    if (ds.exists()) {
-
-                                        DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users");
-                                        user.child(dataSnapshot.child("user").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnap) {
-
-                                                TicketInfo ticketInfo = new TicketInfo(ConductorActivity.this, dataSnap.child("image").getValue().toString(),
-                                                        dataSnapshot.child("sits").getValue().toString(), dataSnapshot.child("total").getValue().toString(), result.getContents());
-                                                ticketInfo.setCanceledOnTouchOutside(false);
-                                                ticketInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                ticketInfo.show();
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
+                            //check if used or not
+                            if (Integer.valueOf(dataSnapshot.child("status").getValue().toString()) == 0) {
 
 
-                                    } else {
+                                DatabaseReference dc = FirebaseDatabase.getInstance().getReference().child("Matatu");
 
-                                        new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
-                                                .setTitleText("Ticket not for this matatu")
-                                                .show();
+                                // mMatatu.child(dataSnapshot.child("matatu").getValue().toString());
+                                // Query q = dc.orderByChild("matatu").equalTo(dataSnapshot.child("matatu").getValue().toString());
+
+                                dc.child(dataSnapshot.child("matatu").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot ds) {
+                                        pDialog.dismiss();
+
+                                        // Toast.makeText(ConductorActivity.this,ds.toString(),Toast.LENGTH_LONG).show();
+                                        // Log.d("sdfsffdsd",  image[0]);
+
+                                        if (ds.exists()) {
+
+                                            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users");
+                                            user.child(dataSnapshot.child("user").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnap) {
+
+                                                    TicketInfo ticketInfo = new TicketInfo(ConductorActivity.this, dataSnap.child("image").getValue().toString(),
+                                                            dataSnapshot.child("sits").getValue().toString(), dataSnapshot.child("total").getValue().toString(), result.getContents());
+                                                    ticketInfo.setCanceledOnTouchOutside(false);
+                                                    ticketInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                                    ticketInfo.show();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+
+                                        } else {
+
+                                            new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                                    .setTitleText("Ticket not for this matatu")
+                                                    .show();
+                                        }
+
                                     }
 
-                                }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                                    }
+                                });
+                            }else {
+                                pDialog.dismissWithAnimation();
+                                new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Ticket has already been used")
+                                        .show();
+                            }
 
                         } else {
-                            pDialog.dismiss();
+                            pDialog.dismissWithAnimation();
                             new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Not a valid Ticket")
                                     .show();
