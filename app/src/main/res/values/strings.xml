@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LFmatatu</string>
+    <string name="title_activity_conductor_module">ConductorModule</string>
+    <string name="title_activity_conductor">ConductorActivity</string>
+</resources>
