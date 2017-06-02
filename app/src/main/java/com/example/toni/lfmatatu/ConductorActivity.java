@@ -41,7 +41,7 @@ public class ConductorActivity extends AppCompatActivity {
 
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private Button scan;
-    private TextView email, plate;
+    private TextView  plate;
     private ImageView profile;
     private String matKey;
 
@@ -57,7 +57,6 @@ public class ConductorActivity extends AppCompatActivity {
 
         //views
         scan = (Button) findViewById(R.id.btn_conductor);
-        email = (TextView) findViewById(R.id.tv_conductor_email);
         plate = (TextView) findViewById(R.id.tv_conductor_plate);
         profile = (ImageView) findViewById(R.id.iv_conductor);
 
@@ -98,45 +97,13 @@ public class ConductorActivity extends AppCompatActivity {
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(android.Manifest.permission.CAMERA)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{android.Manifest.permission.CAMERA},
-                                MY_CAMERA_REQUEST_CODE);
-                    }
-                } else {
-
-                    beginProcess();
-
-                }
-
+                beginProcess();
 
             }
         });
 
     }
 
-    @Override
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
-
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                beginProcess();
-
-            } else {
-
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-
-            }
-
-        }
-    }
 
     private void beginProcess() {
 
@@ -184,50 +151,59 @@ public class ConductorActivity extends AppCompatActivity {
                                 // mMatatu.child(dataSnapshot.child("matatu").getValue().toString());
                                 // Query q = dc.orderByChild("matatu").equalTo(dataSnapshot.child("matatu").getValue().toString());
 
-                                dc.child(dataSnapshot.child("matatu").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot ds) {
-                                        pDialog.dismiss();
+                                if (dataSnapshot.child("matatu").getValue().toString().equals(matKey)) {
 
-                                        // Toast.makeText(ConductorActivity.this,ds.toString(),Toast.LENGTH_LONG).show();
-                                        // Log.d("sdfsffdsd",  image[0]);
+                                    dc.child(dataSnapshot.child("matatu").getValue().toString()).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot ds) {
+                                            pDialog.dismiss();
 
-                                        if (ds.exists()) {
+                                            // Toast.makeText(ConductorActivity.this,ds.toString(),Toast.LENGTH_LONG).show();
+                                            // Log.d("sdfsffdsd",  image[0]);
 
-                                            DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users");
-                                            user.child(dataSnapshot.child("user").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnap) {
+                                            if (ds.exists()) {
 
-                                                    TicketInfo ticketInfo = new TicketInfo(ConductorActivity.this, dataSnap.child("image").getValue().toString(),
-                                                            dataSnapshot.child("sits").getValue().toString(), dataSnapshot.child("total").getValue().toString(), result.getContents());
-                                                    ticketInfo.setCanceledOnTouchOutside(false);
-                                                    ticketInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                    ticketInfo.show();
-                                                }
+                                                DatabaseReference user = FirebaseDatabase.getInstance().getReference().child("Users");
+                                                user.child(dataSnapshot.child("user").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnap) {
 
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
+                                                        TicketInfo ticketInfo = new TicketInfo(ConductorActivity.this, dataSnap.child("image").getValue().toString(),
+                                                                dataSnapshot.child("sits").getValue().toString(), dataSnapshot.child("total").getValue().toString(), result.getContents());
+                                                        ticketInfo.setCanceledOnTouchOutside(false);
+                                                        ticketInfo.getWindow().getAttributes().windowAnimations = R.style.MyAnimation_Window;
+                                                        ticketInfo.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                                        ticketInfo.show();
+                                                    }
 
-                                                }
-                                            });
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                    }
+                                                });
 
 
-                                        } else {
+                                            } else {
 
-                                            new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
-                                                    .setTitleText("Ticket not for this matatu")
-                                                    .show();
+                                                new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("Ticket not for this matatu")
+                                                        .show();
+                                            }
+
                                         }
 
-                                    }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }else {
+                                        }
+                                    });
+                                } else {
+                                    pDialog.dismissWithAnimation();
+                                    new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                            .setTitleText("Ticket not for this matatu")
+                                            .show();
+                                }
+                            } else {
                                 pDialog.dismissWithAnimation();
                                 new SweetAlertDialog(ConductorActivity.this, SweetAlertDialog.ERROR_TYPE)
                                         .setTitleText("Ticket has already been used")

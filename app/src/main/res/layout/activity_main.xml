@@ -8,70 +8,74 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="191dp"
-        android:layout_height="170dp"
-        app:srcCompat="@drawable/logo"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="330dp"
+        android:layout_height="195dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"
-        app:layout_constraintHorizontal_bias="0.503"
+        android:layout_marginRight="71dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo"
+        tools:ignore="ContentDescription" />
 
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/et_signin_email"
         android:layout_width="0dp"
-        android:layout_height="67dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content"
         android:hint="Email"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:met_floatingLabel="highlight"
         app:met_floatingLabelText="Email"
         app:met_iconLeft="@mipmap/ic_email_black_24dp"
         app:met_primaryColor="@color/colorAccent"
         android:layout_marginTop="37dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/imageView"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/et_signin_pass"
         android:layout_width="0dp"
-        android:layout_height="63dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_height="58dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="14dp"
+
         android:hint="Password"
         android:inputType="textPassword"
-
+        android:singleLine="false"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/et_signin_email"
+        app:layout_constraintRight_toRightOf="@+id/et_signin_email"
+        app:layout_constraintTop_toBottomOf="@+id/et_signin_email"
         app:met_floatingLabel="highlight"
         app:met_iconLeft="@mipmap/ic_lock_black_24dp"
-        app:met_primaryColor="@color/colorAccent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/et_signin_email" />
+        app:met_primaryColor="@color/colorAccent" />
 
         <Button
             android:id="@+id/btn_sigin_login"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="251dp"
-            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="Login"
             android:textAllCaps="false"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="37dp"
-            app:layout_constraintTop_toBottomOf="@+id/et_signin_pass"
+            app:layout_constraintRight_toRightOf="@+id/et_signin_pass"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintVertical_bias="0.0"
-            app:layout_constraintHorizontal_bias="0.697" />
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintLeft_toLeftOf="@+id/et_signin_pass"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/et_signin_pass"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="0.159"
+            android:layout_marginRight="0dp" />
 
 
 </android.support.constraint.ConstraintLayout>
