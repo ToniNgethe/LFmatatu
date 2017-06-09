@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+        mUsers = FirebaseDatabase.getInstance().getReference().child("Matatu_Credentials");
+        checkSession();
 
         //views
         email = (EditText) findViewById(R.id.et_signin_email);
@@ -43,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.btn_sigin_login);
 
         //firebase
-        mAuth = FirebaseAuth.getInstance();
-        mUsers = FirebaseDatabase.getInstance().getReference().child("Matatu_Credentials");
+
 
         //sign in
         submit.setOnClickListener(new View.OnClickListener() {
@@ -71,15 +73,19 @@ public class MainActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                                         if (dataSnapshot.exists()) {
+                                            pDialog.dismiss();
 
-                                            String mat_key = dataSnapshot.child("matatu").getValue().toString();
                                             if (dataSnapshot.child("role").getValue().toString().equals("driver")) {
-                                                pDialog.dismiss();
+                                                String mat_key = dataSnapshot.child("mat").getValue().toString();
+                                                Intent i = new Intent(MainActivity.this, DriverActivity.class);
+                                                i.putExtra(_MATATU, mat_key);
+                                                startActivity(i);
+                                                finish();
 
                                                 //redirect to driver
 
                                             } else {
-
+                                                String mat_key = dataSnapshot.child("matatu").getValue().toString();
                                                 //redirect to conductor...
                                                 Intent i = new Intent(MainActivity.this, ConductorActivity.class);
                                                 i.putExtra(_MATATU, mat_key);
@@ -122,5 +128,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void checkSession() {
+        if (mAuth.getCurrentUser() != null) {
+            final SweetAlertDialog pDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#f50057"));
+            pDialog.setTitleText("authenticating user...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+            mUsers.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.exists()) {
+                        pDialog.dismiss();
+
+                        if (dataSnapshot.child("role").getValue().toString().equals("driver")) {
+                            String mat_key = dataSnapshot.child("mat").getValue().toString();
+                            Intent i = new Intent(MainActivity.this, DriverActivity.class);
+                            i.putExtra(_MATATU, mat_key);
+                            startActivity(i);
+                            finish();
+
+                            //redirect to driver
+
+                        } else {
+                            String mat_key = dataSnapshot.child("matatu").getValue().toString();
+                            //redirect to conductor...
+                            Intent i = new Intent(MainActivity.this, ConductorActivity.class);
+                            i.putExtra(_MATATU, mat_key);
+                            startActivity(i);
+                            finish();
+                        }
+
+                    } else {
+                        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Oops...")
+                                .setContentText("Detail not found..contact your sacco")
+                                .show();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 }

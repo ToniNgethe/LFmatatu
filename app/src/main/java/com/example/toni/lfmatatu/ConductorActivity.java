@@ -47,6 +47,7 @@ public class ConductorActivity extends AppCompatActivity {
 
     private DatabaseReference mMatatu;
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,9 @@ public class ConductorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conductor);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //views
         scan = (Button) findViewById(R.id.btn_conductor);
@@ -64,6 +68,16 @@ public class ConductorActivity extends AppCompatActivity {
         matKey = getIntent().getExtras().getString(MainActivity._MATATU);
 
         //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null){
+                    startActivity(new Intent(ConductorActivity.this, MainActivity.class));
+                }
+            }
+        };
+
         mMatatu = FirebaseDatabase.getInstance().getReference().child("Matatu").child(matKey);
         mMatatu.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,6 +118,11 @@ public class ConductorActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
 
     private void beginProcess() {
 
@@ -243,13 +262,20 @@ public class ConductorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.close_activity:
+            case R.id.con_action_logout:
 
-                finish();
+                    mAuth.signOut();
 
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
+    }
+
 }
